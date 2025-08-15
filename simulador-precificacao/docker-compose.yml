@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ifood-pricing-db
+    environment:
+      POSTGRES_DB: pricingdb
+      POSTGRES_USER: pricing
+      POSTGRES_PASSWORD: pricing
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pricing -d pricingdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+volumes:
+  dbdata:
