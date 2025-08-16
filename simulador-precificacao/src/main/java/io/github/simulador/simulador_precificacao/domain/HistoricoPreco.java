@@ -3,6 +3,7 @@ package io.github.simulador.simulador_precificacao.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,8 +24,9 @@ public class HistoricoPreco {
     private Pedido pedido;
 
     @Column(name = "preco_calculado", nullable = false)
-    private Double precoCalculado;
+    private BigDecimal precoCalculado;
 
     @Column(name = "data_registro", nullable = false)
     private LocalDateTime dataRegistro = LocalDateTime.now();
+
 }

@@ -10,7 +10,11 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "pedido")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Pedido {
 
     @Id
@@ -39,4 +43,9 @@ public class Pedido {
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant criadoEm;
+
+    @NotNull
+    @DecimalMin("0.00")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorBase;
 }
