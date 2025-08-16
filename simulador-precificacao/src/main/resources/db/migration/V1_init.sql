@@ -1,21 +1,32 @@
--- Tabela de restaurantes
-create table if not exists restaurante (
-                                           id              bigserial primary key,
-                                           nome            varchar(120) not null,
-    taxa_base       numeric(10,2) not null, -- taxa base do restaurante
-    categoria       varchar(60),
-    rating          numeric(3,2) default 0,
-    criado_em       timestamp not null default now()
-    );
+-- Criar tabela restaurante
+CREATE TABLE restaurante (
+                             id BIGSERIAL PRIMARY KEY,
+                             nome VARCHAR(255) NOT NULL,
+                             categoria VARCHAR(100) NOT NULL
+);
 
--- Tabela de pedidos (básico para Sprint 1)
-create table if not exists pedido (
-                                      id               bigserial primary key,
-                                      cliente_nome     varchar(120) not null,
-    restaurante_id   bigint not null references restaurante (id),
-    distancia_km     numeric(6,2) not null,
-    subtotal         numeric(10,2) not null, -- valor base dos itens do pedido
-    criado_em        timestamp not null default now()
-    );
+-- Criar tabela pedido
+CREATE TABLE pedido (
+                        id BIGSERIAL PRIMARY KEY,
+                        restaurante_id BIGINT NOT NULL,
+                        valor_base NUMERIC(10,2) NOT NULL,
+                        data_pedido TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (restaurante_id) REFERENCES restaurante(id)
+);
 
-create index if not exists idx_pedido_restaurante on pedido(restaurante_id);
+-- Criar tabela parametro_preco
+CREATE TABLE parametro_preco (
+                                 id BIGSERIAL PRIMARY KEY,
+                                 categoria VARCHAR(100) NOT NULL UNIQUE,
+                                 variacao_minima NUMERIC(5,2) NOT NULL,
+                                 variacao_maxima NUMERIC(5,2) NOT NULL
+);
+
+-- Criar tabela historico_preco
+CREATE TABLE historico_preco (
+                                 id BIGSERIAL PRIMARY KEY,
+                                 pedido_id BIGINT NOT NULL,
+                                 preco_calculado NUMERIC(10,2) NOT NULL,
+                                 data_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                 FOREIGN KEY (pedido_id) REFERENCES pedido(id)
+);
