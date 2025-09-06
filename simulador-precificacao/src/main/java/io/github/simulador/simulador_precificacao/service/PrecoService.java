@@ -5,6 +5,7 @@ import io.github.simulador.simulador_precificacao.domain.ParametroPreco;
 import io.github.simulador.simulador_precificacao.domain.Pedido;
 import io.github.simulador.simulador_precificacao.repository.HistoricoPrecoRepository;
 import io.github.simulador.simulador_precificacao.repository.ParametroPrecoRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,6 +19,11 @@ public class PrecoService {
     private final ParametroPrecoRepository parametroPrecoRepository;
     private final HistoricoPrecoRepository historicoPrecoRepository;
 
+    @Cacheable(value = "parametroPorCategoria", key = "#categoria")
+    public Optional<ParametroPreco> parametroPorCategoria(String categoria) {
+        return parametroPrecoRepository.findByCategoria(categoria).stream().findFirst();
+    }
+
     public PrecoService(ParametroPrecoRepository parametroPrecoRepository,
                         HistoricoPrecoRepository historicoPrecoRepository) {
         this.parametroPrecoRepository = parametroPrecoRepository;
@@ -25,6 +31,7 @@ public class PrecoService {
     }
 
     public BigDecimal calcularPreco(Pedido pedido) {
+        var paramOpt = parametroPorCategoria(pedido.getRestaurante().getCategoria());
         // buscar parametro da categoria do restaurante
         Optional<ParametroPreco> parametroOpt = parametroPrecoRepository.findByCategoria(
                 pedido.getRestaurante().getCategoria()
